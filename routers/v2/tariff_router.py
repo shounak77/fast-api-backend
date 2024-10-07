@@ -50,3 +50,15 @@ def read_tariffs(
     
     except Exception as e:
         return error_response(500, "Failed to retrieve tariffs", [str(e)])
+    
+    
+@router.put("/tariffs/{tariff_id}")
+def update_tariff_v2(tariff_id: int, tariff: tariff_schema.TariffCreate, db: Session = Depends(get_db)):
+    """Update tariff by ID (v2) with standard response."""
+    try:
+        db_tariff = crud.update_tariff(db=db, tariff_id=tariff_id, updated_tariff=tariff)
+        if db_tariff is None:
+            return error_response(404, "Tariff not found", {"tariff_id": tariff_id})
+        return success_response(db_tariff, "Tariff updated successfully")
+    except Exception as e:
+        return error_response(500, "Failed to update tariff", [str(e)])

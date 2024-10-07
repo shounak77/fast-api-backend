@@ -53,3 +53,20 @@ def test_query_tariffs_by_currency(client):
     response = client.get(f"{V2_URL_PREFIX}?currency=RUB")
     assert response.json()["code"] == 200
     assert response.json()["data"][0]["currency"] == "RUB"
+
+
+def test_update_tariff(client, test_tariff):
+    """Test updating an existing tariff"""
+    updated_tariff = {
+        "name": "UpdatedTariff",
+        "description": "This will be deleted in the next test",
+        "rate": 0.15,
+        "currency": "USD",
+        "tax_rate": 0.07,
+        "code": "NEW45"
+    }
+    response = client.put(f"{V2_URL_PREFIX}/{test_tariff.id}", json=updated_tariff)
+    assert response.status_code == 200
+    assert response.json()["data"]["name"] == updated_tariff["name"]
+    assert response.json()["data"]["rate"] == updated_tariff["rate"]
+    
