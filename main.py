@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from database import engine, DbBase
 
 from routers.v1.tariff_router import router as tariff_router_v1
+from routers.v2.tariff_router import router as tariff_router_v2
 
 app = FastAPI(
     title="Tariff API",
@@ -13,6 +14,7 @@ app = FastAPI(
 DbBase.metadata.create_all(bind=engine)
 
 app.include_router(tariff_router_v1, prefix="/v1", tags=["Tariffs v1"])
+app.include_router(tariff_router_v2, prefix="/v2", tags=["Tariffs v2"])
 
 
 @app.get("/")
