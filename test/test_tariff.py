@@ -36,3 +36,18 @@ def test_update_tariff(client, test_tariff):
     assert response.status_code == 200
     assert response.json()["name"] == updated_tariff["name"]
     assert response.json()["rate"] == updated_tariff["rate"]
+    
+    
+def test_delete_tariff(client, test_tariff):
+    """Test deleting a tariff"""
+    # Ensure the tariff exists before trying to delete it. This is to ensure it does not fail silently
+    response = client.get(f"/tariffs/{test_tariff.id}")
+    assert response.status_code == 200
+    assert response.json()["name"] == "UpdatedTariff"
+
+    delete_response = client.delete(f"/tariffs/{test_tariff.id}")
+    assert delete_response.status_code == 200
+    assert delete_response.json()["name"] == "UpdatedTariff"
+
+    confirm_response = client.get(f"/tariffs/{test_tariff.id}")
+    assert confirm_response.status_code == 404  # Tariff should no longer exist

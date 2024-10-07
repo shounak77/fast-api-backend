@@ -24,3 +24,10 @@ def update_tariff(db: Session, tariff_id: int, updated_tariff: schema.TariffCrea
         db.commit()
         db.refresh(db_tariff)
     return db_tariff
+
+def delete_tariff(db: Session, tariff_id: int) -> Optional[TariffORM]:
+    db_tariff = db.query(TariffORM).filter(TariffORM.id == tariff_id).first()
+    if db_tariff:
+        db.delete(db_tariff)
+        db.commit()
+    return db_tariff

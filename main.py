@@ -40,6 +40,16 @@ def update_tariff(tariff_id: int, tariff: tariff_schema.TariffCreate, db: Sessio
         raise HTTPException(status_code=404, detail="Tariff not found")
     return db_tariff
 
+
+@app.delete("/tariffs/{tariff_id}", response_model=tariff_schema.Tariff)
+def delete_tariff(tariff_id: int, db: Session = Depends(get_db)):
+    """Delete tariff based on the ID"""
+    db_tariff = crud.delete_tariff(db=db, tariff_id=tariff_id)
+    if db_tariff is None:
+        raise HTTPException(status_code=404, detail="Tariff not found")
+    return db_tariff
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
