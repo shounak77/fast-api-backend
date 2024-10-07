@@ -13,3 +13,10 @@ def test_create_tariff(client):
     assert response.status_code == 200  # Expect 200 OK
     assert response.json()["name"] == new_tariff["name"]
     assert response.json()["rate"] == new_tariff["rate"]
+
+
+def test_read_tariff_by_id(client, test_tariff):
+    """Test reading a tariff by ID"""
+    response = client.get(f"/tariffs/{test_tariff.id}") 
+    assert response.status_code == 200
+    assert response.json()["name"] == test_tariff.name
