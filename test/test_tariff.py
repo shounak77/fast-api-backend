@@ -20,3 +20,19 @@ def test_read_tariff_by_id(client, test_tariff):
     response = client.get(f"/tariffs/{test_tariff.id}") 
     assert response.status_code == 200
     assert response.json()["name"] == test_tariff.name
+    
+    
+def test_update_tariff(client, test_tariff):
+    """Test updating an existing tariff"""
+    updated_tariff = {
+        "name": "UpdatedTariff",
+        "description": "This will be deleted in the next test",
+        "rate": 0.15,
+        "currency": "USD",
+        "tax_rate": 0.07,
+        "code": "UPD45"
+    }
+    response = client.put(f"/tariffs/{test_tariff.id}", json=updated_tariff)
+    assert response.status_code == 200
+    assert response.json()["name"] == updated_tariff["name"]
+    assert response.json()["rate"] == updated_tariff["rate"]
