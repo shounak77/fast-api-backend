@@ -70,3 +70,19 @@ def test_update_tariff(client, test_tariff):
     assert response.json()["data"]["name"] == updated_tariff["name"]
     assert response.json()["data"]["rate"] == updated_tariff["rate"]
     
+
+def test_delete_tariff(client, test_tariff):
+    """Test deleting a tariff"""
+
+    response = client.get(f"{V2_URL_PREFIX}/{test_tariff.id}")
+    assert response.json()["code"] == 200
+    assert response.json()["data"]["name"] == "UpdatedTariff"
+
+    delete_response = client.delete(f"{V2_URL_PREFIX}/{test_tariff.id}")
+    assert delete_response.json()["code"] == 200
+    assert delete_response.json()["data"]["name"] == "UpdatedTariff"
+
+
+    confirm_response = client.get(f"{V2_URL_PREFIX}/{test_tariff.id}")
+    assert confirm_response.json()["code"] == 404 
+    

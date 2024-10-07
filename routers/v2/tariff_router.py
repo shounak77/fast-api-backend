@@ -62,3 +62,15 @@ def update_tariff_v2(tariff_id: int, tariff: tariff_schema.TariffCreate, db: Ses
         return success_response(db_tariff, "Tariff updated successfully")
     except Exception as e:
         return error_response(500, "Failed to update tariff", [str(e)])
+    
+
+@router.delete("/tariffs/{tariff_id}")
+def delete_tariff_v2(tariff_id: int, db: Session = Depends(get_db)):
+    """Delete a tariff by ID (v2) with standard response."""
+    try:
+        db_tariff = crud.delete_tariff(db=db, tariff_id=tariff_id)
+        if db_tariff is None:
+            return error_response(404, "Tariff not found", {"tariff_id": tariff_id})
+        return success_response(db_tariff, "Tariff deleted successfully")
+    except Exception as e:
+        return error_response(500, "Failed to delete tariff", [str(e)])
