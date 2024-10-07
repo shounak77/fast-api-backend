@@ -56,5 +56,5 @@ def test_tariff(db):
     db.commit()
     db.refresh(test_tariff_1) # id availabe after refresh
     yield test_tariff_1
-    db.delete(test_tariff_1)  # Clean up after tests
+    # db.delete(test_tariff_1)  # Clean up after tests
     db.commit()
