@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy.orm import Session
 from models.tariff import TariffORM
@@ -31,3 +31,29 @@ def delete_tariff(db: Session, tariff_id: int) -> Optional[TariffORM]:
         db.delete(db_tariff)
         db.commit()
     return db_tariff
+
+def query_tariffs(
+    db: Session,
+    name: str = None,
+    currency: str = None,
+    rate: float = None,
+    code: str = None,
+    tax_rate: float = None,
+    skip: int = 0,
+    limit: int = 10
+) -> List[TariffORM]:
+    """Query tariffs based on optional filters."""
+    query = db.query(TariffORM)
+
+    if name:
+        query = query.filter(TariffORM.name == name)
+    if currency:
+        query = query.filter(TariffORM.currency == currency)
+    if rate is not None:  # 0 as a valid rate. Hence checking with none
+        query = query.filter(TariffORM.rate == rate)
+    if code:
+        query = query.filter(TariffORM.code == code)
+    if tax_rate is not None:  # 0 as a valid rate. Hence checking with none
+        query = query.filter(TariffORM.tax_rate == tax_rate)
+
+    return query.offset(skip).limit(limit).all()

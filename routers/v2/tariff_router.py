@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from typing import Optional
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 import schemas.tariff as tariff_schema
 import crud.tariff as crud
@@ -16,3 +17,36 @@ def create_tariff_v2(tariff: tariff_schema.TariffCreate, db: Session = Depends(g
         return success_response(new_tariff, "Tariff created successfully")
     except Exception as e:
         return error_response(500, "Failed to create tariff", [str(e)])
+    
+@router.get("/tariffs/{tariff_id}")
+def read_tariff_v2(tariff_id: int, db: Session = Depends(get_db)):
+    """Retrieve a tariff by ID"""
+    db_tariff = crud.get_tariff_by_id(db=db, tariff_id=tariff_id)
+    if db_tariff is None:
+        return error_response(404, "Tariff not found", {"tariff_id": tariff_id})
+    return success_response(db_tariff, "Tariff retrieved successfully")
+
+
+@router.get("/tariffs/")
+def read_tariffs(
+    db: Session = Depends(get_db),
+    name: Optional[str] = Query(None, description="Filter tariffs by name"),
+    currency: Optional[str] = Query(None, description="Filter tariffs by currency"),
+    rate: Optional[float] = Query(None, description="Filter tariffs by rate"),
+    code: Optional[str] = Query(None, description="Filter tariffs by code"),
+    tax_rate: Optional[float] = Query(None, description="Filter tariffs by tax rate"),
+):
+
+    try:
+        tariffs = crud.query_tariffs(
+            db=db,
+            name=name,
+            currency=currency,
+            rate=rate,
+            code=code,
+            tax_rate=tax_rate
+        )
+        return success_response(tariffs, "Tariffs retrieved successfully")
+    
+    except Exception as e:
+        return error_response(500, "Failed to retrieve tariffs", [str(e)])
