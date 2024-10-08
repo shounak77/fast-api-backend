@@ -1,53 +1,25 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-from database import engine, get_db, DbBase
-import schemas.tariff as tariff_schema
-import crud.tariff as crud
+from database import engine, DbBase
 
+from routers.v1.tariff_router import router as tariff_router_v1
+from routers.v2.tariff_router import router as tariff_router_v2
 
-app = FastAPI()
+app = FastAPI(
+    title="Tariff API",
+    description="API for CRUD operations of tariffs",
+    version="2.0",
+)
+
+DbBase.metadata.create_all(bind=engine)
+
+app.include_router(tariff_router_v1, prefix="/v1", tags=["Tariffs v1"])
+app.include_router(tariff_router_v2, prefix="/v2", tags=["Tariffs v2"])
+
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
-
-
-DbBase.metadata.create_all(bind=engine) 
-
-app = FastAPI()
-
-@app.post("/tariffs/", response_model=tariff_schema.Tariff)
-def create_tariff(tariff: tariff_schema.TariffCreate, db: Session = Depends(get_db)):
-    """Create tariff."""
-    return crud.create_tariff(db=db, tariff=tariff)
-
-
-@app.get("/tariffs/{tariff_id}", response_model=tariff_schema.Tariff)
-def read_tariff(tariff_id: int, db: Session = Depends(get_db)):
-    """Get tariffs based ID."""
-    db_tariff = crud.get_tariff_by_id(db=db, tariff_id=tariff_id)
-    if db_tariff is None:
-        raise HTTPException(status_code=404, detail="Tariff not found")
-    return db_tariff
-
-
-@app.put("/tariffs/{tariff_id}", response_model=tariff_schema.Tariff)
-def update_tariff(tariff_id: int, tariff: tariff_schema.TariffCreate, db: Session = Depends(get_db)):
-    """Update tariff based on the ID"""
-    db_tariff = crud.update_tariff(db=db, tariff_id=tariff_id, updated_tariff=tariff)
-    if db_tariff is None:
-        raise HTTPException(status_code=404, detail="Tariff not found")
-    return db_tariff
-
-
-@app.delete("/tariffs/{tariff_id}", response_model=tariff_schema.Tariff)
-def delete_tariff(tariff_id: int, db: Session = Depends(get_db)):
-    """Delete tariff based on the ID"""
-    db_tariff = crud.delete_tariff(db=db, tariff_id=tariff_id)
-    if db_tariff is None:
-        raise HTTPException(status_code=404, detail="Tariff not found")
-    return db_tariff
+def root():
+    return {"message": "Welcome to the Tariff API"}
 
 
 if __name__ == "__main__":

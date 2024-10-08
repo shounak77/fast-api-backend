@@ -51,10 +51,19 @@ def test_tariff(db):
         tax_rate=0.05,
         code="63JK9"
     )
+    test_tariff_2 = TariffORM(
+        name="TestTariff2",
+        description="Some descreption",
+        rate=0.12,
+        currency="EUR",
+        tax_rate=0.02,
+        code="99LBN"
+    )
 
     db.add(test_tariff_1)
+    db.add(test_tariff_2)
     db.commit()
     db.refresh(test_tariff_1) # id availabe after refresh
     yield test_tariff_1
-    db.delete(test_tariff_1)  # Clean up after tests
+    db.delete(test_tariff_2) 
     db.commit()
