@@ -3,6 +3,7 @@ import logging
 from typing import Optional
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import OperationalError
 import schemas.tariff as tariff_schema
 import crud.tariff as crud
 from database import get_db
@@ -21,9 +22,10 @@ def create_tariff_v2(tariff: tariff_schema.TariffCreate, db: Session = Depends(g
         new_tariff = crud.create_tariff(db=db, tariff=tariff)
         logger.info("Tariff created with ID: %d", new_tariff.id)
         return success_response(new_tariff, "Tariff created successfully")
-    except Exception as e:
+    except OperationalError as e:
         logger.error("Failed to create tariff: %s", e)
-        return error_response(500, "Failed to create tariff", [str(e)])
+
+        return error_response(400, "Failed to create tariff", [str(e)])
     
 @router.get("/tariffs/{tariff_id}")
 def read_tariff_v2(tariff_id: int, db: Session = Depends(get_db)):
@@ -46,6 +48,7 @@ def read_tariffs(
     code: Optional[str] = Query(None, description="Filter tariffs by code"),
     tax_rate: Optional[float] = Query(None, description="Filter tariffs by tax rate"),
 ):
+    """Fetch tariffs based on matched field"""
 
     try:
         logger.info("Querying tariffs with filters: name=%s, currency=%s, rate=%s, code=%s, tax_rate=%s", name, currency, rate, code, tax_rate)
@@ -59,8 +62,9 @@ def read_tariffs(
         )
         return success_response(tariffs, "Tariffs retrieved successfully")
     
-    except Exception as e:
-        return error_response(500, "Failed to retrieve tariffs", [str(e)])
+    except OperationalError as e:
+        logger.error("Failed to create retrieve: %s", e)
+        return error_response(400, "Unable to retrieve tariffs", [str(e)])
     
     
 @router.put("/tariffs/{tariff_id}")
@@ -74,8 +78,8 @@ def update_tariff_v2(tariff_id: int, tariff: tariff_schema.TariffCreate, db: Ses
             return error_response(404, "Tariff not found", {"tariff_id": tariff_id})
         logger.info("Tariff updated successfully: %s", db_tariff.id)
         return success_response(db_tariff, "Tariff updated successfully")
-    except Exception as e:
-        logger.error("Failed to update tariff: %s", str(e))
+    except OperationalError as e:
+        logger.error("Unable update tariff: %s", str(e))
         return error_response(500, "Failed to update tariff", [str(e)])
     
 
@@ -90,6 +94,6 @@ def delete_tariff_v2(tariff_id: int, db: Session = Depends(get_db)):
             return error_response(404, "Tariff not found", {"tariff_id": tariff_id})
         logger.info("Tariff deleted successfully: %s", db_tariff.id)
         return success_response(db_tariff, "Tariff deleted successfully")
-    except Exception as e:
-        logger.error("Failed to delete tariff: %s", str(e))
+    except OperationalError as e:
+        logger.error("Uable to delete tariff: %s", str(e))
         return error_response(500, "Failed to delete tariff", [str(e)])
