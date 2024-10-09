@@ -1,0 +1,48 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment directories
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+.Python
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+
+# Test and coverage directories
+tests/
+*.cover
+.cover/
+nosetests.xml
+coverage.xml
+*.log
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local configuration files
+*.env
+*.local
+
+# Ignore Docker-related files
+Dockerfile
+docker-compose.yml
+
+# Ignore specific files
+*.DS_Store
