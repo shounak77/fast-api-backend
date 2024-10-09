@@ -1,12 +1,16 @@
-# FastAPI Backend Server
+# Tariff API Backend Server
 
 ## Overview
 
-This project is a FastAPI backend server designed for efficient resource management through versioned APIs. FastAPI was chosen for its simplicity and speed, offering an easier setup compared to Django, while also providing more advanced features than Flask. This makes it a great fit for modern web applications that require performance without unnecessary complexity.
+This project demonstrates use FastAPI to create CRUD operations for a Tariff object, providing a practical solution for managing tariff-related data in web applications. It was developed following Test-Driven Development (TDD) principles, ensuring that each feature and function is thoroughly tested using pytest.
 
-The use of pytest for testing ensures that the codebase remains reliable and maintainable, allowing for quick identification and resolution of issues.
+The project showcases the setup of versioned APIs (both versions currently operational), demonstrating how to manage API versioning in a real-world context. To support developer understanding, Sphinx is used for auto-generating code documentation from docstrings, providing an example of how to maintain clear, up-to-date documentation. API documentation can be viewed through the integrated Swagger documentation.
 
-The server includes API documentation via Swagger, enabling  exploration of the available endpoints. Additionally, Sphinx is employed to generate documentation from the code's docstrings, which aids in understanding the functionality. Lastly, Greylog is implemented for centralized log management, providing insights into application behavior and facilitating efficient monitoring and troubleshooting.
+For logging and monitoring, Greylog has been integrated to centralize logs and simplify troubleshooting, enabling insight into application behavior and facilitating efficient issue resolution.
+
+#### Future Enhancements:
+- Background jobs using RedisQ to handle tasks asynchronously.
+- Custom exception handling for errors with more informative feedback.
 
 ## Features
 
@@ -29,8 +33,8 @@ To get a copy of the project up and running on your local machine, follow these 
 **Clone the Repository**
 
 ```bash
-git clone https://github.com/shounak77/fast-api-backend
-cd fast-api-backend
+git clone https://github.com/shounak77/tariff-api-example
+cd tariff-api-example
 ```
 **Create a Virtual Environment**
 ```
