@@ -64,7 +64,7 @@ Alternatively one can run the application using Docker Compose.
 - Ensure you have docker installed. 
 
 - Download just the [docker-compose.yml](docker-compose.yml) file.
-- Ensure to update the crediantial details for graylog.
+- Ensure to update the crediantial details for graylog in `docker-compose.yml`.
 
 ```
 environment:
@@ -77,6 +77,7 @@ environment:
 docker-compose up -d
 ```
 **Accessing the Application and Logs**
+
 Once the application is running, you can access the FastAPI documentation at http://localhost:8000/docs in your web browser.
 
 Graylog interface can be accessed by navigating to http://localhost:9000 in your web browser. Root username is `admin`
